@@ -1,6 +1,6 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, jsonify, send_file, send_from_directory
 
-app = Flask(__name__, template_folder="./templates/")
+app = Flask(__name__)
 
 # Store control points in-memory
 control_points = []
@@ -10,14 +10,11 @@ img_width, img_height = 4096, 4096  # Original image size
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file('index.html')
 
-@app.route('/add_point', methods=['POST'])
-def add_point():
-    x = request.json.get('x')
-    y = request.json.get('y')
-    control_points.append((x, y))
-    return jsonify(success=True)
+@app.route('/scripts/<path:name>')
+def scripts(name):
+    return send_from_directory('scripts', name)
 
 @app.route('/get_points', methods=['GET'])
 def get_points():
